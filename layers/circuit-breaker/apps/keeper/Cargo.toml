@@ -1,0 +1,20 @@
+[package]
+name = "circuit-breaker-keeper"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "circuit-breaker-keeper"
+path = "src/main.rs"
+
+[dependencies]
+thiserror = "2.0.12"
+tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread", "signal", "time"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter", "fmt", "json"] }
+
+[lints]
+workspace = true
+
