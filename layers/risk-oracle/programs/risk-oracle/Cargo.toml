@@ -1,0 +1,16 @@
+[package]
+name = "risk-oracle-program"
+version.workspace = true
+edition = "2021"
+license.workspace = true
+authors.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+pinocchio = { version = "0.11.1", default-features = false }
+
+[lints]
+workspace = true
+

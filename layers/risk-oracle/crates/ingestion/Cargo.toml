@@ -1,0 +1,33 @@
+[package]
+name = "shock-absorber-ingestion"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+name = "shock_absorber_ingestion"
+path = "src/lib.rs"
+
+[[bin]]
+name = "shock-absorber-ingestion"
+path = "src/main.rs"
+
+[dependencies]
+async-trait = "0.1.89"
+clap = { version = "4.5.38", features = ["derive", "env"] }
+reqwest = { version = "0.12.15", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+thiserror = "2.0.12"
+tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread", "signal", "sync", "time"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter", "fmt", "json"] }
+url = { version = "2.5.4", features = ["serde"] }
+
+[dev-dependencies]
+tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread"] }
+
+[lints]
+workspace = true
+

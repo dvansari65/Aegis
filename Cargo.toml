@@ -1,0 +1,27 @@
+[workspace]
+members = [
+    "layers/risk-oracle/crates/ingestion",
+    "layers/risk-oracle/crates/core",
+    "layers/risk-oracle/programs/risk-oracle",
+    "layers/risk-oracle/apps/api",
+    "layers/risk-oracle/apps/oracle-publisher",
+    "layers/circuit-breaker/crates/core",
+    "layers/circuit-breaker/programs/circuit-breaker",
+    "layers/circuit-breaker/apps/keeper",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+version = "0.1.0"
+authors = ["Danish Vahajuddin Ansari"]
+repository = "https://github.com/dvansari65/stable-coin-shock-absorber"
+
+[workspace.lints.clippy]
+dbg_macro = "deny"
+todo = "deny"
+unwrap_used = "deny"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
