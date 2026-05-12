@@ -1,0 +1,22 @@
+[package]
+name = "risk-oracle-publisher"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "risk-oracle-publisher"
+path = "src/main.rs"
+
+[dependencies]
+shock-absorber-ingestion = { path = "../../crates/ingestion" }
+shock-absorber-risk-oracle = { path = "../../crates/core" }
+thiserror = "2.0.12"
+tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread", "signal", "time"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter", "fmt", "json"] }
+
+[lints]
+workspace = true
+
