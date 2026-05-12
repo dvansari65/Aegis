@@ -1,0 +1,302 @@
+@import "tailwindcss";
+
+:root {
+  --white: #ffffff;
+  --mist: #eaf6ff;
+  --ice: #c1e5ff;
+  --blue: #9cd5ff;
+  --deep-blue: #6ab0e3;
+  --ink: #102a3a;
+  --ink-dim: rgba(16, 42, 58, 0.72);
+  --ink-muted: rgba(16, 42, 58, 0.48);
+  --line: rgba(106, 176, 227, 0.24);
+  --status-ok: #3b86b8;
+  --status-warn:  #f59e0b;
+  --status-error: #ef4444;
+}
+
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+
+* {
+  border-color: var(--line);
+}
+
+html,
+body {
+  background: var(--white);
+  color: var(--ink);
+  font-family:
+    var(--font-inter),
+    "Inter",
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--blue);
+  color: var(--ink);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar          { width: 8px; height: 8px; }
+::-webkit-scrollbar-track    { background: var(--mist); }
+::-webkit-scrollbar-thumb    { background: var(--deep-blue); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #3b86b8; }
+
+/* ============================================================
+   SEMANTIC CLASSES  — use these in every component
+   ============================================================ */
+
+@layer components {
+
+  /* Layout */
+  .container-x {
+    @apply mx-auto max-w-[1280px] px-6 md:px-10;
+  }
+
+  /* ── Text helpers ─────────────────────────────────────────── */
+
+  /* Primary text — #EBEBEB, very bright on navy */
+  .t-primary   { color: var(--ink); }
+
+  /* Secondary text — ~72 % silver */
+  .t-secondary { color: var(--ink-dim); }
+
+  /* Muted labels — ~42 % silver */
+  .t-muted     { color: var(--ink-muted); }
+
+  /* Lime accent text */
+  .t-accent    { color: var(--deep-blue); }
+
+  /* Navy text (for light-bg elements) */
+  .t-navy      { color: var(--ink); }
+
+  /* ── Background helpers ───────────────────────────────────── */
+
+  .bg-page     { background: var(--white); }
+  .bg-section  { background: var(--mist); }
+  .bg-surface  { background: var(--ice); }
+  .bg-card     { background: var(--white); }
+  .bg-lime     { background: var(--deep-blue); }
+
+  /* ── PILL / BADGE ─────────────────────────────────────────── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(106, 176, 227, 0.32);
+    background: rgba(234, 246, 255, 0.82);
+    padding: 0.25rem 0.875rem;
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #3b86b8;
+  }
+
+  /* ── BUTTONS ──────────────────────────────────────────────── */
+
+  /* Primary — lime bg, dark navy text */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    background: var(--deep-blue);
+    padding: 0.75rem 1.75rem;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.01em;
+    transition: all 0.22s ease;
+  }
+  .btn-primary:hover {
+    background: #3b86b8;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(106, 176, 227, 0.32);
+  }
+
+  /* Secondary — outlined with silver border */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(106, 176, 227, 0.28);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.75rem 1.75rem;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: all 0.22s ease;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(106, 176, 227, 0.45);
+    background: var(--mist);
+    color: #245b7f;
+    transform: translateY(-2px);
+  }
+
+  /* ── CARD ─────────────────────────────────────────────────── */
+  .card {
+    border-radius: 1.25rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.78);
+    padding: 1.75rem;
+    transition: all 0.28s ease;
+  }
+  .card:hover {
+    border-color: rgba(106, 176, 227, 0.48);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(106, 176, 227, 0.16);
+  }
+
+  /* ── ICON CHIP ────────────────────────────────────────────── */
+  .icon-chip {
+    display: grid;
+    place-items: center;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(106, 176, 227, 0.28);
+    background: var(--mist);
+    color: #3b86b8;
+  }
+
+  /* ── GLOW ─────────────────────────────────────────────────── */
+  .glow-lime {
+    box-shadow:
+      0 0 0 1px rgba(106, 176, 227, 0.2) inset,
+      0 0 60px -10px rgba(106, 176, 227, 0.25);
+  }
+
+  /* ── GRID BACKGROUND ──────────────────────────────────────── */
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(106, 176, 227, 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(106, 176, 227, 0.12) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /* ── RADIAL HERO FLARE ────────────────────────────────────── */
+  .radial-flare {
+    background: radial-gradient(
+      ellipse 70% 60% at 50% 0%,
+      rgba(156, 213, 255, 0.58),
+      transparent 70%
+    );
+  }
+
+  /* ── CODE BLOCK ───────────────────────────────────────────── */
+  .code-block {
+    background: rgba(234, 246, 255, 0.8);
+    border-top: 1px solid var(--line);
+    padding: 1.5rem;
+    font-family: ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+
+}
+
+/* ============================================================
+   GLASS NAV
+   ============================================================ */
+
+.glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(106, 176, 227, 0.18);
+}
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+
+.marquee-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+/* ============================================================
+   STATUS DOTS
+   ============================================================ */
+
+.live-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--deep-blue);
+  flex-shrink: 0;
+}
+
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  background: rgba(106, 176, 227, 0.28);
+  animation: pulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.critical-dot {
+  background: var(--status-error);
+}
+
+.critical-dot::after {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes pulse {
+  0%        { transform: scale(0.95); opacity: 0.7; }
+  70%, 100% { transform: scale(1.5);  opacity: 0; }
+}
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes fade-up {
+  0%   { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+.animate-ticker   { animation: ticker 40s linear infinite; }
+.animate-shimmer  { animation: shimmer 2.5s ease-in-out infinite; }
+.animate-fade-up  { animation: fade-up 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.animate-float    { animation: float 4s ease-in-out infinite; }
