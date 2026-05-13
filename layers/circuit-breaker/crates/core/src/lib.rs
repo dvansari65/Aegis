@@ -3,6 +3,7 @@ pub mod coordination;
 pub mod liquidity_routing;
 pub mod policy;
 pub mod recovery;
+pub mod risk_oracle_feed;
 pub mod throttling;
 pub mod toxic_arbitrage;
 pub mod types;
