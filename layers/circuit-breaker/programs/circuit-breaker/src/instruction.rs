@@ -47,3 +47,33 @@ impl CircuitBreakerInstruction {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::CircuitBreakerInstruction;
+    use crate::state::ProtectionMode;
+
+    #[test]
+    fn update_policy_unpack_matches_keeper_ix_layout() {
+        let payload: [u8; 14] = [
+            1, 0, 5, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ];
+        let ix = CircuitBreakerInstruction::unpack(&payload).expect("unpack");
+        match ix {
+            CircuitBreakerInstruction::UpdatePolicy {
+                mode,
+                adaptive_fee_bps,
+                withdrawal_throttle_pct,
+                toxic_routing_restricted,
+                current_slot,
+            } => {
+                assert_eq!(mode, ProtectionMode::Normal);
+                assert_eq!(adaptive_fee_bps, 5);
+                assert_eq!(withdrawal_throttle_pct, 100);
+                assert!(!toxic_routing_restricted);
+                assert_eq!(current_slot, 0);
+            }
+            _ => panic!("expected UpdatePolicy"),
+        }
+    }
+}
