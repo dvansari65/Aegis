@@ -1,3 +1,4 @@
+pub mod monitor;
 mod routes;
 
 use axum::{Router, routing::get};
