@@ -10,12 +10,14 @@ name = "risk-oracle-publisher"
 path = "src/main.rs"
 
 [dependencies]
+serde_json = "1.0.140"
 shock-absorber-ingestion = { path = "../../crates/ingestion" }
 shock-absorber-risk-oracle = { path = "../../crates/core" }
 thiserror = "2.0.12"
 tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread", "signal", "time"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter", "fmt", "json"] }
+ureq = { version = "2.12.1", features = ["json"] }
 
 [lints]
 workspace = true
