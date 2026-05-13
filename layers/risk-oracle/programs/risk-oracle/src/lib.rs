@@ -54,6 +54,7 @@ pub fn process_instruction(
             stress_score,
             liquidity_health,
             depeg_probability,
+            updated_at_slot,
         } => {
             if accounts.len() < 2 {
                 return Err(ProgramError::NotEnoughAccountKeys);
@@ -84,7 +85,11 @@ pub fn process_instruction(
             state_data[1] = stress_score;
             state_data[2] = liquidity_health;
             state_data[3] = depeg_probability;
-            
+
+            if let Some(slot) = updated_at_slot {
+                state_data[8..16].copy_from_slice(&slot.to_le_bytes());
+            }
+
             Ok(())
         }
     }
