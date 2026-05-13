@@ -1,11 +1,25 @@
 use serde::{Deserialize, Serialize};
 
+#[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ProtectionMode {
-    Normal,
-    Watch,
-    PanicProtection,
-    Recovery,
+    Normal = 0,
+    Watch = 1,
+    PanicProtection = 2,
+    Recovery = 3,
+}
+
+impl ProtectionMode {
+    /// Discriminant stored by the on-chain circuit breaker program (`u8`).
+    pub fn try_from_discriminant(v: u8) -> Option<Self> {
+        match v {
+            0 => Some(Self::Normal),
+            1 => Some(Self::Watch),
+            2 => Some(Self::PanicProtection),
+            3 => Some(Self::Recovery),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
