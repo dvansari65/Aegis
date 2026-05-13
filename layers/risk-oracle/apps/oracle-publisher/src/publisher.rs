@@ -8,6 +8,22 @@ use shock_absorber_risk_oracle::types::{LiquidityHealth, DepegProbabilityBand};
 
 use crate::{config::PublisherConfig, error::PublisherError};
 
+fn fetch_current_slot(rpc_url: &str) -> u64 {
+    let body = serde_json::json!({
+        "jsonrpc": "2.0",
+        "id": 1u64,
+        "method": "getSlot",
+        "params": [{ "commitment": "processed" }]
+    });
+
+    ureq::post(rpc_url)
+        .send_json(body)
+        .ok()
+        .and_then(|resp| resp.into_json::<serde_json::Value>().ok())
+        .and_then(|v| v.get("result").and_then(|r| r.as_u64()))
+        .unwrap_or(0)
+}
+
 pub struct PublisherWorker {
     config: PublisherConfig,
 }
@@ -58,12 +74,23 @@ impl PublisherWorker {
                         DepegProbabilityBand::High => 2,
                         DepegProbabilityBand::VeryHigh => 3,
                     };
-                    
-                    // Format: [1 (UpdateRisk tag), score, health, depeg]
-                    let instruction_payload = vec![1u8, score, health_u8, depeg_u8];
-                    
+
+                    let slot = self
+                        .config
+                        .solana_rpc_url
+                        .as_deref()
+                        .map(fetch_current_slot)
+                        .unwrap_or(0);
+
+                    // [tag=UpdateRisk, score, health, depeg] + optional 8-byte `updated_at_slot` (LE)
+                    let mut instruction_payload = vec![1u8, score, health_u8, depeg_u8];
+                    if slot > 0 {
+                        instruction_payload.extend_from_slice(&slot.to_le_bytes());
+                    }
+
                     warn!(
-                        "SIMULATED ON-CHAIN TX PAYLOAD: {:?}",
+                        "SIMULATED ON-CHAIN TX PAYLOAD (len={}): {:?}",
+                        instruction_payload.len(),
                         instruction_payload
                     );
                 }
