@@ -15,6 +15,9 @@ pub enum OracleInstruction {
         stress_score: u8,
         liquidity_health: u8,
         depeg_probability: u8,
+        /// When `Some`, written to `RiskState.updated_at_slot` (little-endian).
+        /// Legacy 3-byte payloads omit this and leave the slot unchanged.
+        updated_at_slot: Option<u64>,
     },
 }
 
@@ -25,13 +28,32 @@ impl OracleInstruction {
         match tag {
             0 => Ok(Self::Initialize),
             1 => {
-                if rest.len() < 3 {
-                    return Err(ProgramError::InvalidInstructionData);
-                }
+                let (stress_score, liquidity_health, depeg_probability, updated_at_slot) =
+                    match rest.len() {
+                        3 => (
+                            rest[0],
+                            rest[1],
+                            rest[2],
+                            None,
+                        ),
+                        n if n >= 11 => {
+                            let mut slot_bytes = [0u8; 8];
+                            slot_bytes.copy_from_slice(&rest[3..11]);
+                            (
+                                rest[0],
+                                rest[1],
+                                rest[2],
+                                Some(u64::from_le_bytes(slot_bytes)),
+                            )
+                        }
+                        _ => return Err(ProgramError::InvalidInstructionData),
+                    };
+
                 Ok(Self::UpdateRisk {
-                    stress_score: rest[0],
-                    liquidity_health: rest[1],
-                    depeg_probability: rest[2],
+                    stress_score,
+                    liquidity_health,
+                    depeg_probability,
+                    updated_at_slot,
                 })
             }
             _ => Err(ProgramError::InvalidInstructionData),
@@ -55,17 +77,42 @@ mod tests {
 
     #[test]
     fn test_unpack_update_risk() {
-        let payload = [1, 85, 3, 2]; // tag, score, health, depeg
+        let mut payload = [0u8; 12];
+        payload[0..4].copy_from_slice(&[1, 85, 3, 2]);
+        payload[4..12].copy_from_slice(&9_999u64.to_le_bytes());
+
         let instruction = OracleInstruction::unpack(&payload).unwrap();
         match instruction {
             OracleInstruction::UpdateRisk {
                 stress_score,
                 liquidity_health,
                 depeg_probability,
+                updated_at_slot,
             } => {
                 assert_eq!(stress_score, 85);
                 assert_eq!(liquidity_health, 3);
                 assert_eq!(depeg_probability, 2);
+                assert_eq!(updated_at_slot, Some(9_999));
+            }
+            _ => panic!("Wrong instruction unpacked"),
+        }
+    }
+
+    #[test]
+    fn test_unpack_update_risk_legacy_no_slot() {
+        let payload = [1, 85, 3, 2];
+        let instruction = OracleInstruction::unpack(&payload).unwrap();
+        match instruction {
+            OracleInstruction::UpdateRisk {
+                stress_score,
+                liquidity_health,
+                depeg_probability,
+                updated_at_slot,
+            } => {
+                assert_eq!(stress_score, 85);
+                assert_eq!(liquidity_health, 3);
+                assert_eq!(depeg_probability, 2);
+                assert!(updated_at_slot.is_none());
             }
             _ => panic!("Wrong instruction unpacked"),
         }
