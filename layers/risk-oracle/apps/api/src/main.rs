@@ -1,6 +1,9 @@
+mod chain_monitor;
 mod config;
 mod error;
 mod http;
+mod monitor_resolve;
+mod policy_wire;
 mod state;
 
 use config::ApiConfig;
@@ -18,7 +21,7 @@ async fn main() -> Result<(), ApiError> {
 
     let config = ApiConfig::from_env()?;
     let address = config.bind_address;
-    let state = AppState::new();
+    let state = AppState::new(&config)?;
     let app = router(state)
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());
