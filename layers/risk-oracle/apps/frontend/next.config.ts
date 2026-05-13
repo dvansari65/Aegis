@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+/** Proxies are implemented in `app/risk-oracle-api/[[...path]]/route.ts` (reliable in dev + prod). */
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
