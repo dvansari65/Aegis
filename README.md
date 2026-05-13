@@ -1,12 +1,10 @@
 <table align="center" cellpadding="28" cellspacing="0">
   <tr>
-    <td align="center" bgcolor="#F8FAFC">
-      <img src="docs/public/aegis-logo.svg" alt="Aegis" width="280" />
+    <td align="center" bgcolor="#102A3A">
+      <img src="docs/public/aegis-logo-white.svg" alt="Aegis" width="280" />
     </td>
   </tr>
 </table>
-
-<h1 align="center">Aegis</h1>
 
 <p align="center">
   <strong>Real-time stablecoin risk control and circuit breaker infrastructure on Solana.</strong>
