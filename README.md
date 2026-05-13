@@ -1,58 +1,103 @@
-<div align="center">
-  <img src="layers/risk-oracle/apps/frontend/public/aegis-logo.svg" alt="Aegis Logo" width="300" />
+<table align="center" cellpadding="28" cellspacing="0">
+  <tr>
+    <td align="center" bgcolor="#F8FAFC">
+      <img src="docs/public/aegis-logo.svg" alt="Aegis" width="280" />
+    </td>
+  </tr>
+</table>
 
-  <h1>Aegis</h1>
-  <p><strong>A Real-Time Stablecoin Risk-Control & Circuit Breaker Protocol on Solana</strong></p>
-</div>
+<h1 align="center">Aegis</h1>
+
+<p align="center">
+  <strong>Real-time stablecoin risk control and circuit breaker infrastructure on Solana.</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/rust-workspace-orange?logo=rust&logoColor=white" alt="Rust" /></a>
+  <a href="https://solana.com/"><img src="https://img.shields.io/badge/Solana-programs-9945FF?logo=solana&logoColor=white" alt="Solana" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License MIT" /></a>
+</p>
 
 ---
 
-## 🛡️ Overview
+## Overview
 
-**Aegis** is designed to detect panic-driven instability in stablecoin markets before liquidity collapse spreads across DeFi protocols. Stablecoins are the foundation of decentralized finance, but during market panic, rapid withdrawals and arbitrage exhaustion can lead to systemic failures.
+**Aegis** detects panic-driven instability in stablecoin markets before liquidity stress spreads across DeFi. During withdrawals, oracle dislocations, and bridge outflows, markets can move faster than human operators can react.
 
-Aegis acts as:
-1. **A Real-Time Risk Oracle**: Ingesting live, on-chain state to measure market panic.
-2. **A Market Stress Engine**: Mathematically computing liquidity health and depeg probabilities.
-3. **An Automated Stabilization Layer**: Halting withdrawals or scaling fees via an on-chain Circuit Breaker.
+Aegis is built as three cooperating roles:
 
-## 🏗️ Architecture
+| Role | What it does |
+|------|----------------|
+| **Risk oracle** | Ingests live market and on-chain signals, scores stress, and publishes machine-readable risk state. |
+| **Stress engine** | Combines signals into liquidity health, depeg probability, and a normalized stress score. |
+| **Circuit breaker** | Maps severe risk state into defensive controls (fees, throttles, routing) for integrated protocols. |
 
-Aegis is composed of two primary layers:
+---
 
-### Layer 1: Risk Oracle
-A real-time data pipeline and risk engine that calculates system panic scores (0-100).
-- **`core`**: Pure Rust crate containing the mathematical formulas for Depeg Probability, Liquidity Health, and Stress Scoring.
-- **`ingestion`**: Async workers polling Pyth Price feeds, DEX Spl-Token pools, and tracking Whale exits.
-- **`oracle-publisher`**: The off-chain worker that securely pipes ingestion data into the core scoring engine, and subsequently updates the Solana smart contract.
-- **`risk-oracle` (On-Chain)**: Highly optimized Solana program built with `pinocchio` (zero-allocator) that persistently stores the `RiskState` so DeFi protocols can compose with it.
+## Repository layout
 
-### Layer 2: Circuit Breaker (In Progress)
-The defensive infrastructure layer. Protocols will route their withdraw/deposit actions through this layer. If the Risk Oracle reports a critical Stress Score (>80), Aegis will automatically trip the breaker, halting outflows to preserve protocol insolvency.
+| Path | Description |
+|------|-------------|
+| `layers/risk-oracle/crates/core` | Deterministic risk math (stress, liquidity health, depeg probability). |
+| `layers/risk-oracle/crates/ingestion` | Data collection and normalization. |
+| `layers/risk-oracle/apps/oracle-publisher` | Off-chain publisher that updates on-chain risk state. |
+| `layers/risk-oracle/apps/api` | HTTP API for off-chain consumers (see that crate’s README for routes). |
+| `layers/risk-oracle/programs/risk-oracle` | Solana program storing canonical risk state (`pinocchio`). |
+| `layers/circuit-breaker/programs/circuit-breaker` | Solana program for circuit breaker control state. |
+| `layers/circuit-breaker/apps/keeper` | Off-chain automation for policy execution. |
+| `docs/` | Next.js marketing and documentation site. |
 
-## 🚀 Getting Started
+---
+
+## Architecture (high level)
+
+```text
+Market / oracle / DEX / bridge data
+  → Risk oracle (off-chain + ingestion + core)
+  → On-chain risk oracle program
+  → Circuit breaker program + keeper
+  → Integrated protocol actions
+```
+
+---
+
+## Getting started
 
 ### Prerequisites
+
 - [Rust](https://www.rust-lang.org/tools/install)
 - [Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools)
 
-### Building the Smart Contracts
-Aegis smart contracts are optimized using `pinocchio`. To build the programs:
+### Build on-chain programs
+
+Programs use `pinocchio` and the Solana SBF toolchain:
+
 ```bash
 cargo build-sbf
 ```
 
-### Running the Test Suite
-The core risk engine contains comprehensive unit tests for mathematical boundary verifications:
+### Run tests
+
 ```bash
 cargo test --workspace
 ```
 
-### Running the Oracle Publisher
-To simulate the end-to-end Layer 1 pipeline:
+### Run the oracle publisher (Layer 1 pipeline)
+
 ```bash
 cargo run -p risk-oracle-publisher
 ```
 
-## 📜 License
+### Documentation site (optional)
+
+```bash
+cd docs
+npm install
+npm run dev
+```
+
+---
+
+## License
+
 MIT
