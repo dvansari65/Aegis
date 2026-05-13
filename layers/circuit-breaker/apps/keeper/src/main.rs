@@ -1,11 +1,4 @@
-mod config;
-mod error;
-mod keeper;
-
-use config::KeeperConfig;
-use error::KeeperError;
-use keeper::KeeperWorker;
-use tracing_subscriber::{EnvFilter, fmt};
+use circuit_breaker_keeper::{init_tracing, KeeperConfig, KeeperError, KeeperWorker};
 
 #[tokio::main]
 async fn main() -> Result<(), KeeperError> {
@@ -15,14 +8,4 @@ async fn main() -> Result<(), KeeperError> {
     let worker = KeeperWorker::new(config);
 
     worker.run().await
-}
-
-fn init_tracing() {
-    let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
-
-    fmt()
-        .with_env_filter(env_filter)
-        .with_target(false)
-        .json()
-        .init();
 }
