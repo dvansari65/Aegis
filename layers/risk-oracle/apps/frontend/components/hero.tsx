@@ -49,7 +49,7 @@ export default function Hero() {
             style={{ animationDelay: "280ms" }}
           >
             <a
-              href="#architecture"
+              href="/#architecture"
               data-testid="hero-primary-cta"
               className="btn-primary"
             >
@@ -58,7 +58,7 @@ export default function Hero() {
             </a>
 
             <a
-              href="#docs"
+              href="/docs/protocol-overview"
               data-testid="hero-secondary-cta"
               className="btn-secondary"
             >
